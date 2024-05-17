@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+import io
+import contextlib
 
 app = FastAPI()
 
@@ -12,5 +14,14 @@ def read_root():
 
 @app.post("/execute")
 def execute_code(body_code: CodeBody):
-    exec(body_code.code)
-    return "Code Executed Successfully"
+    try:
+        
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            exec(body_code.code)
+        
+        output = stdout.getvalue().rstrip()
+        
+        return { "result": output }
+    except Exception as e:
+        return {"error": str(e)}

@@ -5,11 +5,21 @@ from flake8.api import legacy as flake8
 import os
 import io
 import contextlib
+from fastapi.middleware.cors import CORSMiddleware
+from chatbot import get_completion
 
 app = FastAPI()
 
 class CodeBody(BaseModel):
     code: str
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite todas las orígenes, puedes especificar dominios específicos
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def read_root():
@@ -49,3 +59,7 @@ def lint_code(body_code: CodeBody):
         return {"errors": lint_errors}
     else:
         return {"message": "No linting issues found"}
+    
+@app.post("/consult")
+def consult_chatbot(body_code: CodeBody):
+    return get_completion(body_code.code)

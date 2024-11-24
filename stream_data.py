@@ -20,7 +20,7 @@ async def websocket_endpoint(websocket: WebSocket):
             
             # Inicia el streaming de la respuesta
             completion = client.chat.completions.create(
-                model="lmstudio-ai/gemma-2b-it-GGUF",
+                model="TheBloke/CodeLlama-7B-Instruct-GGUF",
                 messages=history,
                 temperature=0.7,
                 stream=True,

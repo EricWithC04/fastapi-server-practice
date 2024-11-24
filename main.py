@@ -8,6 +8,7 @@ import contextlib
 from fastapi.middleware.cors import CORSMiddleware
 from chatbot import get_completion
 from stream_data import websocket_endpoint
+from langchain_chat import obtain_qa
 
 app = FastAPI()
 
@@ -63,7 +64,10 @@ def lint_code(body_code: CodeBody):
     
 @app.post("/consult")
 def consult_chatbot(body_code: CodeBody):
-    return get_completion(body_code.code)
+    # return get_completion(body_code.code)
+    qa = obtain_qa()
+    res = qa.invoke({"query": body_code.code})
+    return res["result"]
 
 @app.websocket("/ws/chat")
 def consult_websocket(websocket: WebSocket):

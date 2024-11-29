@@ -7,7 +7,7 @@ from langchain.chains import RetrievalQA
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Definimos el modelo de llm que vamos a utilizar
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key="")
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key="AIzaSyBU9_pY009t63bv4LxCh7n2r_u4LNy-erQ")
 # llm = ChatOllama(model="llama3.2:3b")
 
 # Definimos el path del archivo pdf (ruta relativa en este caso)

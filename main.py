@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from chatbot import get_completion
 from stream_data import websocket_endpoint
 from langchain_chat import obtain_qa
+from exercise import evaluar_codigo
 
 app = FastAPI()
 
@@ -68,6 +69,21 @@ def consult_chatbot(body_code: CodeBody):
     qa = obtain_qa()
     res = qa.invoke({"query": body_code.code})
     return res["result"]
+
+@app.post("/api/evaluar_ejercicios")
+async def evaluar_ejercicios(code_body: CodeBody):
+    completados = []
+    incompletos = []
+    msg = ''
+
+    evaluar_codigo(code_body.code, completados, incompletos)
+
+    if len(incompletos) > 0:
+        msg = 'No completaste todos los ejercicios correctamente, pero no te desanimes. Hecha un vistazo a los resultados que te dejó la consola y trata de solucionarlos!'
+    else:
+        msg = 'Felicidades, completaste todos los ejercicios correctamente!. Puedes pasar a la siguiente instancia o probar con otros ejercicios.'
+
+    return { "msg": msg, "completados": completados, "incompletos": incompletos }
 
 @app.websocket("/ws/chat")
 def consult_websocket(websocket: WebSocket):
